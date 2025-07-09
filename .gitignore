@@ -1,0 +1,64 @@
+# ========== BACKEND (.NET) ==========
+## Build results
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+## User-specific files
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.sln.docstates
+**/.vs/
+**/.vscode/
+
+## Logs
+**/*.log
+
+## Local database
+**/*.mdf
+**/*.ldf
+**/App_Data/
+
+## Others
+**/*.dbmdl
+**/*.pdb
+**/Generated_Code/
+
+# Rider project files
+**/.idea/
+
+# Visual Studio Code workspace
+**/.vscode/
+
+# ================= FRONTEND (Angular) =================
+# Node modules
+frontend/node_modules/
+# Angular build output
+frontend/dist/
+frontend/.angular/
+# Angular cache
+frontend/.angular/cache/
+# Environment files (if needed)
+frontend/src/environments/*.local.ts
+
+# npm debug log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/package-lock.json
+frontend/pnpm-lock.yaml
+frontend/yarn.lock
+
+# IDE files
+frontend/.idea/
+frontend/.vscode/
+
+# Others
+frontend/.env
+frontend/.DS_Store
+
+# ========== OS files ==========
+**/.DS_Store
+**/Thumbs.db
