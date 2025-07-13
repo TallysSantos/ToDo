@@ -10,29 +10,29 @@ using System.Threading.Tasks;
 
 namespace ToDoApi.Services
 {
-    public class TaskService : ITaskService
+    public class TaskListService : ITaskListService
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public TaskService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        public TaskListService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<TaskResponseDto>> GetAllTasks(int userId)
+        public async Task<List<TaskListResponseDto>> GetAllTaskLists(int userId)
         {
             try
             {
                 if (!await _context.Users.AnyAsync(x => x.Id == userId))
-                    throw new TaskValidationException("User not found.");
+                    throw new TaskListValidationException("User not found.");
 
-                if (!await _context.Tasks.AnyAsync(x => x.UserId == userId))
-                    throw new TaskValidationException("No tasks found.");
+                if (!await _context.TaskLists.AnyAsync(x => x.UserId == userId))
+                    throw new TaskListValidationException("No taskLists found.");
 
-                var tasks = await _context.Tasks
+                var tasks = await _context.TaskLists
                     .Where(x => x.UserId == userId)
-                    .Select(x => new TaskResponseDto
+                    .Select(x => new TaskListResponseDto
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -49,9 +49,9 @@ namespace ToDoApi.Services
 
                 return tasks;
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
-                throw new TaskValidationException(ex.Message);
+                throw new TaskListValidationException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -60,15 +60,15 @@ namespace ToDoApi.Services
 
         }
 
-        public async Task<string> Create(TaskDto dto)
+        public async Task<string> Create(TaskListDto dto)
         {
             try
             {
                 if (dto == null || string.IsNullOrWhiteSpace(dto.Name))
-                    throw new TaskValidationException("O título da tarefa precisa estar preenchido.");
+                    throw new TaskListValidationException("O título da lista precisa estar preenchido.");
 
-                if (await _context.Tasks.AnyAsync(x => x.Name.ToLower().Equals(dto.Name.ToLower())))
-                    throw new TaskValidationException("Uma tarefa com esse título já existe.");
+                if (await _context.TaskLists.AnyAsync(x => x.Name.ToLower().Equals(dto.Name.ToLower())))
+                    throw new TaskListValidationException("Uma lista com esse título já existe.");
 
                 var user = await GetUser();
 
@@ -80,14 +80,14 @@ namespace ToDoApi.Services
                     UserId = user.Id
                 };
 
-                await _context.Tasks.AddAsync(task);
+                await _context.TaskLists.AddAsync(task);
                 await _context.SaveChangesAsync();
 
-                return "Tarefa criada com sucesso!";
+                return "Lista criada com sucesso!";
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
-                throw new TaskValidationException(ex.Message);
+                throw new TaskListValidationException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -100,24 +100,24 @@ namespace ToDoApi.Services
             try
             {
                 if (id < 0)
-                    throw new TaskValidationException("ID informado não é válido.");
+                    throw new TaskListValidationException("ID informado não é válido.");
 
-                var task = await _context.Tasks.FindAsync(id);
+                var task = await _context.TaskLists.FindAsync(id);
 
                 if (task == null)
-                    throw new TaskValidationException("Tarefa não encontrada.");
+                    throw new TaskListValidationException("Lista não encontrada.");
 
                 if (task.TaskItems.Any())
                     _context.TaskItems.RemoveRange(task.TaskItems);
 
-                _context.Tasks.Remove(task);
+                _context.TaskLists.Remove(task);
                 await _context.SaveChangesAsync();
 
-                return "Tarefa apagada com sucesso!";
+                return "Lista apagada com sucesso!";
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
-                throw new TaskValidationException(ex.Message);
+                throw new TaskListValidationException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -125,33 +125,33 @@ namespace ToDoApi.Services
             }
         }
 
-        public async Task<string> Update(int id, TaskDto dto)
+        public async Task<string> Update(int id, TaskListDto dto)
         {
             try
             {
                 if (id < 0)
-                    throw new TaskValidationException("ID informado não é válido.");
+                    throw new TaskListValidationException("ID informado não é válido.");
 
                 if (string.IsNullOrEmpty(dto.Name))
-                    throw new TaskValidationException("O título da tarefa precisa estar preenchido.");
+                    throw new TaskListValidationException("O título da lista precisa estar preenchido.");
 
-                if (await _context.Tasks.AnyAsync(x => x.Name.ToLower().Equals(dto.Name.ToLower())))
-                    throw new TaskValidationException("Uma tarefa com esse título já existe.");
+                if (await _context.TaskLists.AnyAsync(x => x.Id != id && x.Name.ToLower().Equals(dto.Name.ToLower())))
+                    throw new TaskListValidationException("Uma lista com esse título já existe.");
 
-                var task = await _context.Tasks.FindAsync(id);
+                var task = await _context.TaskLists.FindAsync(id);
 
                 task.Name = dto.Name;
                 task.Description = dto.Description;
                 task.UpdateAt = DateTime.UtcNow;
 
-                _context.Tasks.Update(task);
+                _context.TaskLists.Update(task);
                 await _context.SaveChangesAsync();
 
-                return "Tarefa atualizada com sucesso!";
+                return "Lista atualizada com sucesso!";
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
-                throw new TaskValidationException(ex.Message);
+                throw new TaskListValidationException(ex.Message);
             }
             catch (Exception ex)
             {

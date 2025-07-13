@@ -1,6 +1,6 @@
 ﻿namespace ToDoApi.Models.DTOs;
 
-public record TaskResponseDto
+public record TaskListResponseDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

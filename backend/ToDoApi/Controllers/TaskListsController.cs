@@ -9,13 +9,13 @@ namespace ToDoApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("Api/v1/Tasks")]
-    public class TasksController : ControllerBase
+    [Route("Api/v1/TaskLists")]
+    public class TaskListsController : ControllerBase
     {
-        private readonly ITaskService _taskService;
-        public TasksController(ITaskService taskService)
+        private readonly ITaskListService _taskListService;
+        public TaskListsController(ITaskListService taskListService)
         {
-            _taskService = taskService;
+            _taskListService = taskListService;
         }
 
         [HttpGet]
@@ -25,11 +25,11 @@ namespace ToDoApi.Controllers
             {
                 int userId = int.Parse(User.FindFirst("userId")?.Value);
 
-                var tasks = await _taskService.GetAllTasks(userId);
+                var taskLists = await _taskListService.GetAllTaskLists(userId);
 
-                return StatusCode(200, new { Message = new { tasks } });
+                return StatusCode(200, new { Message = new { taskLists } });
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
                 return StatusCode(400, new { Message = new { Error = ex.Message } });
             }
@@ -40,15 +40,15 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask(TaskDto dto)
+        public async Task<IActionResult> CreateTaskList(TaskListDto dto)
         {
             try
             {
-                string returnMessage = await _taskService.Create(dto);
+                string returnMessage = await _taskListService.Create(dto);
 
                 return StatusCode(201, new { Message = returnMessage });
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
                 return StatusCode(400, new { Message = new { Error = ex.Message } });
             }
@@ -64,11 +64,11 @@ namespace ToDoApi.Controllers
         {
             try
             {
-                string returnMessage = await _taskService.Delete(id);
+                string returnMessage = await _taskListService.Delete(id);
 
                 return StatusCode(200, new { Message = returnMessage });
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
                 return StatusCode(400, new { Message = new { Error = ex.Message } });
             }
@@ -79,15 +79,15 @@ namespace ToDoApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, TaskDto dto)
+        public async Task<IActionResult> Update(int id, TaskListDto dto)
         {
             try
             {
-                string returnMessage = await _taskService.Update(id, dto);
+                string returnMessage = await _taskListService.Update(id, dto);
 
                 return StatusCode(200, new { Message = returnMessage });
             }
-            catch (TaskValidationException ex)
+            catch (TaskListValidationException ex)
             {
                 return StatusCode(400, new { Message = new { Error = ex.Message } });
             }

@@ -8,7 +8,6 @@ public class TaskItem
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DueDate { get; set; }
     public bool IsCompleted { get; set; }
-
     public int TaskListId { get; set; }
     public TaskList TaskList { get; set; }
 }

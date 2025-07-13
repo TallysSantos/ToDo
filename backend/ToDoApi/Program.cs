@@ -45,7 +45,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskListService, TaskListService>();
 builder.Services.AddHttpContextAccessor();
 
 var keyString = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key not found");

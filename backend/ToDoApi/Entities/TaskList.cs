@@ -9,6 +9,5 @@ public class TaskList
     public DateTime? UpdateAt { get; set; } = null;
     public int UserId { get; set; }
     public ApplicationUser User { get; set; }
-
     public ICollection<TaskItem> TaskItems { get; set; } = new List<TaskItem>();
 }
