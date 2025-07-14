@@ -9,7 +9,7 @@ namespace ToDoApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("Api/v1/TaskLists")]
+    [Route("Api/v1/taskLists")]
     public class TaskListsController : ControllerBase
     {
         private readonly ITaskListService _taskListService;
