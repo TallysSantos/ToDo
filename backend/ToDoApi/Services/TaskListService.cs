@@ -5,8 +5,6 @@ using ToDoApi.Entities;
 using ToDoApi.Exceptions;
 using ToDoApi.Models.DTOs;
 using ToDoApi.Services.Interfaces;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace ToDoApi.Services
 {
@@ -28,7 +26,7 @@ namespace ToDoApi.Services
                     throw new TaskListValidationException("User not found.");
 
                 if (!await _context.TaskLists.AnyAsync(x => x.UserId == userId))
-                    throw new TaskListValidationException("No taskLists found.");
+                    throw new TaskListValidationException("List not found.");
 
                 var tasks = await _context.TaskLists
                     .Where(x => x.UserId == userId)
